@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medusa
+  namespace: medusa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: medusa
+  template:
+    metadata:
+      labels:
+        app: medusa
+    spec:
+      containers:
+        - name: medusa
+          image: ghcr.io/buenonyckolas/medusa-devops:latest
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: medusa-secrets
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              value: redis://redis:6379
+            - name: NODE_ENV
+              value: development
+            - name: STORE_CORS
+              value: http://localhost
+            - name: ADMIN_CORS
+              value: http://localhost
+            - name: AUTH_CORS
+              value: http://localhost
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: medusa-secrets
+                  key: JWT_SECRET
+            - name: COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: medusa-secrets
+                  key: COOKIE_SECRET
+          ports:
+            - containerPort: 9000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: medusa
+  namespace: medusa
+spec:
+  selector:
+    app: medusa
+  ports:
+    - port: 9000
+  type: ClusterIP
