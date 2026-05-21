@@ -1,0 +1,42 @@
+# ============================================================
+# terraform.tfvars.example
+# Copy this file to terraform.tfvars and fill in the values.
+# NEVER commit terraform.tfvars — it contains secrets.
+# ============================================================
+
+# General
+aws_region   = "us-east-1"
+environment  = "production"
+project_name = "medusa"
+
+# Networking
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+availability_zones   = ["us-east-1a", "us-east-1b"]
+
+# EC2 / ECS capacity
+ec2_instance_type    = "t3.medium"
+ec2_min_size         = 1
+ec2_max_size         = 3
+ec2_desired_capacity = 2
+ec2_key_pair_name    = ""  # Leave empty to disable SSH access
+
+# RDS PostgreSQL
+db_instance_class        = "db.t3.micro"
+db_name                  = "medusa"
+db_username              = "medusa"
+db_allocated_storage     = 20
+db_backup_retention_days = 7
+db_multi_az              = false
+
+# ECS task resources
+medusa_cpu           = 512
+medusa_memory        = 1024
+medusa_desired_count = 2
+medusa_container_port = 9000
+
+# Secrets — fill with real values, store securely
+db_password   = "CHANGE_ME_strong_password"
+jwt_secret    = "CHANGE_ME_random_32_char_string"
+cookie_secret = "CHANGE_ME_random_32_char_string"
